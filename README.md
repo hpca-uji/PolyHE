@@ -51,7 +51,7 @@ pip install -e .
 
   Encryption options
 
-  - `slots: int = 12`
+  - `slots: int = 13`
 
     `2 ** slots` elements per backend ciphertext
 
