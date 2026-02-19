@@ -7,7 +7,6 @@ Easy Homomorphic Encryption
 ## Example
 ```python
 import polyhe
-
 ctx = polyhe.new()
 
 # Numbers
