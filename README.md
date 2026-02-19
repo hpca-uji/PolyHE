@@ -1,5 +1,5 @@
 # PolyHE
-Easy Homomorphic Encryption
+Simple & easy Homomorphic Encryption for Python
 
 - Supports Python's operators & pickle
 - Supports arbitrary typed & shaped arrays
