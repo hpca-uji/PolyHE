@@ -14,9 +14,9 @@ p1 = 1
 p2 = 2
 c1 = ctx.encrypt(p1)
 c2 = ctx.encrypt(p2)
-c3 = c1 * c2
+c3 = c1 * c2 + p1
 p3 = ctx.decrypt(c3)
-# 2
+# 3
 
 # Lists
 p1 = [0.3, 0.4]
