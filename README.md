@@ -23,9 +23,9 @@ p1 = [0.3, 0.4]
 p2 = [0.4, 0.3]
 c1 = ctx.encrypt(p1)
 c2 = ctx.encrypt(p2)
-c3 = c1 + c2
+c3 = -c1 + c2
 p3 = ctx.decrypt(c3)
-# [0.7, 0.7]
+# [0.1, -0.1]
 
 # NumPy
 import numpy as np
