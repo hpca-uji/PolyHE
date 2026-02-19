@@ -1,12 +1,14 @@
 """OpenFHE encryption"""
 
 import sys
+import typing
 import copyreg
 from dataclasses import dataclass
+from functools import cached_property
 
-import numpy as np
-
-from uhe import core
+from polyhe import core
+from polyhe.core import context
+from polyhe.core import ciphertext
 
 # Make sure global package is not confused with current package
 _pkg = sys.path.pop(0)
@@ -30,11 +32,28 @@ SECURITY_LEVEL = {
 
 
 @dataclass(repr=False, eq=False, order=False, slots=True, frozen=True)
-class Ciphertext[P: np.number](core.Ciphertext[openfhe.Ciphertext, P]):
+class Ciphertext(ciphertext.Ciphertext):
     """OpenFHE ciphertext"""
+    _context: "Context"
+
+    def _neg(self, a: openfhe.Ciphertext) -> openfhe.Ciphertext:
+        """Negate a ciphertext"""
+        return self._context._context.EvalNegate(a)
+
+    def _add(self, a: openfhe.Ciphertext, b: openfhe.Ciphertext) -> openfhe.Ciphertext:
+        """Add two ciphertexts"""
+        return self._context._context.EvalAdd(a, b)
+
+    def _sub(self, a: openfhe.Ciphertext, b: openfhe.Ciphertext) -> openfhe.Ciphertext:
+        """Substract two ciphertexts"""
+        return self._context._context.EvalSub(a, b)
+
+    def _mul(self, a: openfhe.Ciphertext, b: openfhe.Ciphertext) -> openfhe.Ciphertext:
+        """Multiply two ciphertexts"""
+        return self._context._context.EvalMult(a, b)
 
 
-class Context(core.Context[openfhe.Ciphertext]):
+class Context(context.Context):
     """OpenFHE context"""
     _cls = Ciphertext
 
@@ -42,15 +61,15 @@ class Context(core.Context[openfhe.Ciphertext]):
         """Initialize context"""
         super().__init__(options)
 
-        ring_dim = 2 ** self._poly_degree
-        print(ring_dim, self._poly_degree, self._slots)
-        level = SECURITY_LEVEL[self._security]
+        ring_dim = 2 ** self._poly_exp
+        print(ring_dim, self._poly_exp, self._slots_exp)
+        level = SECURITY_LEVEL[self._security_level]
 
         # Context
         parameters = openfhe.CCParamsCKKSRNS()
         parameters.SetRingDim(ring_dim)
         parameters.SetSecurityLevel(level)
-        parameters.SetScalingModSize(self._scale)
+        parameters.SetScalingModSize(self._scale_exp)
         self._context = openfhe.GenCryptoContext(parameters)
         self._context.Enable(openfhe.PKESchemeFeature.PKE)
         # self._context.Enable(openfhe.PKESchemeFeature.KEYSWITCH)
@@ -60,18 +79,33 @@ class Context(core.Context[openfhe.Ciphertext]):
         keys = self._context.KeyGen()
         self._public_key = keys.publicKey
         self._private_key = keys.secretKey
+        self._context.EvalMultKeyGen(self._private_key)
 
-    def _encrypt_chunk(self, chunk: list) -> openfhe.Ciphertext:
-        """Encode list to ciphertext"""
-        pack = self._context.MakeCKKSPackedPlaintext(chunk)
-        cipher = self._context.Encrypt(self._public_key, pack)
-        return cipher
+    @cached_property
+    def public(self) -> typing.Self:
+        """Get public context"""
+        context = super().public
+        try:
+            del context._private_key
+        except AttributeError:
+            pass
+        return context
 
-    def _decrypt_chunk(self, chunk: openfhe.Ciphertext) -> list:
-        """Decode cypertext to list"""
-        pack = self._context.Decrypt(chunk, self._private_key)
-        plain = pack.GetRealPackedValue()
-        return plain
+    def _encode(self, chunk):
+        """Ecnode data to plaintext"""
+        return self._context.MakeCKKSPackedPlaintext(chunk)
+
+    def _encrypt(self, chunk: openfhe.Plaintext) -> openfhe.Ciphertext:
+        """Encrypt plaintext to ciphertext"""
+        return self._context.Encrypt(self._public_key, chunk)
+
+    def _decrypt(self, chunk: openfhe.Ciphertext) -> openfhe.Plaintext:
+        """Decrypt cypertext to plaintext"""
+        return self._context.Decrypt(chunk, self._private_key)
+
+    def _decode(self, chunk: openfhe.Plaintext):
+        """Decode plaintext to data"""
+        return chunk.GetRealPackedValue()
 
 
 # Serialization

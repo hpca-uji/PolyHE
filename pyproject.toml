@@ -1,7 +1,7 @@
 [project]
-name = "uhe"
-version = "0.1.0"
-description = "Homomorphic Encryption made easy"
+name = "polyhe"
+version = "1.0.0"
+description = "Easy Homomorphic Encryption"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
@@ -18,7 +18,7 @@ classifiers = [
     "Topic :: Utilities"
 ]
 keywords = ["Homomorphic", "Encryption", "Python"]
-urls = { Homepage = "https://github.com/hpca-uji/uhe", Repository = "https://github.com/hpca-uji/uhe.git"}
+urls = { Homepage = "https://github.com/hpca-uji/polyhe", Repository = "https://github.com/hpca-uji/polyhe.git"}
 
 requires-python = ">=3.13"
 dependencies = [
@@ -36,6 +36,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = [
-    "uhe",
-    "uhe.*"
+    "polyhe",
+    "polyhe.*"
 ]

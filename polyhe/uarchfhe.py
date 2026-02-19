@@ -1,16 +1,16 @@
 """uArchFHE encryption"""
 
-# FIXME: Serialization performance
+# FIXME: uArchFHE does not support plaintext operations
+# FIXME: uArchFHE does not support public context serialization
 
 import sys
 import copyreg
-import dataclasses
 from dataclasses import dataclass
 from functools import cached_property
 
-import numpy as np
-
-from uhe import core
+from polyhe import core
+from polyhe.core import context
+from polyhe.core import ciphertext
 
 # Make sure global package is not confused with current package
 _pkg = sys.path.pop(0)
@@ -25,38 +25,34 @@ __all__ = (
 )
 
 
-@dataclass(eq=False, order=False, slots=True, frozen=True)
-class Ciphertext[P: np.number](core.Ciphertext[uarchfhe.PyCiphertext, P]):
+@dataclass(repr=False, eq=False, order=False, slots=True, frozen=True)
+class Ciphertext(ciphertext.Ciphertext):
     """uArchFHE ciphertext"""
-    _context: uarchfhe.PyContext = dataclasses.field(repr=False)
+    _context: "Context"
 
-    def _new(self, /, *args, **kwds):
-        """Create new operable ciphertext"""
-        return super(Ciphertext, self)._new(_context=self._context, *args, **kwds)
-
-    def _operable(self, other) -> None:
-        """Ensure ciphertext is operable"""
-        super(Ciphertext, self)._operable(other)
-
-        # Synchronize contexts
-        self._link_context(self._context)
-        other._link_context(self._context)
-
-    def _link_context(self, context: uarchfhe.PyContext) -> None:
-        """Link all chunks to context"""
+    def _link(self, context: "Context") -> None:
+        """Link ciphertext to context"""
         for chunk in self._chunks:
-            chunk.attach_context(context)
+            chunk.attach_context(context._context)
 
-    def _add_chunk(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
+    def _neg(self, a: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
+        """Negate a ciphertext"""
+        return uarchfhe.PyCiphertext.negate(a)
+
+    def _add(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
         """Add two ciphertexts"""
         return uarchfhe.PyCiphertext.add(a, b)
 
-    def _mul_chunk(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
+    def _sub(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
+        """Substract two ciphertexts"""
+        return uarchfhe.PyCiphertext.add(a, self._neg(b))
+
+    def _mul(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
         """Multiply two ciphertexts"""
         return uarchfhe.PyCiphertext.mul(a, b)
 
 
-class Context(core.Context[uarchfhe.PyCiphertext]):
+class Context(context.Context):
     """uArchFHE context"""
     _cls = Ciphertext
 
@@ -67,8 +63,7 @@ class Context(core.Context[uarchfhe.PyCiphertext]):
         # Context
         h = 3  # Secret key Hamming weight (security parameter)
         sigma = 3  # Standard deviation for error distribution (security parameter)
-        self._context = uarchfhe.PyContext(self._poly_degree, max(self._coeff_modulus), self._scale, sigma, h)
-        self._workspace = [0] * (2 ** self._slots)
+        self._context = uarchfhe.PyContext(self._poly_exp, max(self._coeff_modulus), self._scale_exp, sigma, h)
 
         # Keys
         keygen = uarchfhe.PyKeyGen(self._context)
@@ -79,25 +74,18 @@ class Context(core.Context[uarchfhe.PyCiphertext]):
         """uArchFHE CKKS context"""
         return uarchfhe.PyCKKS(self._context, self._keys)
 
-    def __getstate__(self) -> object:
+    def __getstate__(self) -> dict:
         """Get serializable state"""
         state = super().__getstate__()
         state.pop("_ckks", None)
         return state
 
-    def _new(self, /, *args, **kwds) -> core.Ciphertext:
-        """Create new operable ciphertext"""
-        return super()._new(_context=self._context, *args, **kwds)
+    def _encrypt(self, chunk) -> uarchfhe.PyCiphertext:
+        """Encrypt list to ciphertext"""
+        return self._ckks.encrypt(chunk, len(chunk), self._scale_exp, max(self._coeff_modulus))
 
-    def _encrypt_chunk(self, chunk: list) -> uarchfhe.PyCiphertext:
-        """Encode list to ciphertext"""
-        if len(chunk) < len(self._workspace):
-            self._workspace[:len(chunk)] = chunk
-            chunk = self._workspace
-        return self._ckks.encrypt(chunk, len(chunk), self._scale, max(self._coeff_modulus))
-
-    def _decrypt_chunk(self, chunk: uarchfhe.PyCiphertext) -> list:
-        """Decode cypertext to list"""
+    def _decrypt(self, chunk: uarchfhe.PyCiphertext):
+        """Decrypt cypertext to list"""
         return self._ckks.decrypt(chunk)
 
 

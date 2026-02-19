@@ -1,38 +1,54 @@
-# uHE
-Homomorphic Encryption made easy
+# PolyHE
+Easy Homomorphic Encryption
 
-- Builtin pickle support
-- Maintains array type and shape
-- Supports arbitrary sized arrays
+- Supports Pythons operators & pickle serialization
+- Supports arbitrary typed, shaped & sized arrays
 
 ## Example
 ```python
-import uhe
-import numpy
+import polyhe
 
-ctx = uhe.new()
+ctx = polyhe.new()
 
-p1 = np.full((2, 3, 4), 0.3)
-p2 = np.full((2, 3, 4), 0.4)
-
+# Numbers
+p1 = 1
+p2 = 2
 c1 = ctx.encrypt(p1)
 c2 = ctx.encrypt(p2)
 c3 = c1 + c2
-
 p3 = ctx.decrypt(c3)
-# np.full((2, 3, 4), 0.7)
+# 3
+
+# Lists
+p1 = [0.3, 0.4]
+p2 = [0.4, 0.3]
+c1 = ctx.encrypt(p1)
+c2 = ctx.encrypt(p2)
+c3 = c1 + c2
+p3 = ctx.decrypt(c3)
+# [0.7, 0.7]
+
+# NumPy
+import numpy as np
+p1 = np.full((2, 3, 4), 0.3, np.float64)
+p2 = np.full((2, 3, 4), 0.3, np.float64)
+c1 = ctx.encrypt(p1)
+c2 = ctx.encrypt(p2)
+c3 = c1 + c2
+p3 = ctx.decrypt(c3)
+# np.full((2, 3, 4), 0.7, np.float64)
 ```
 
 ## Install
 ### Production
 ```bash
-pip install uhe
+pip install polyhe
 ```
 
 ### Development
 ```bash
-git clone https://github.com/hpca-uji/uhe.git
-cd uhe
+git clone https://github.com/hpca-uji/polyhe.git
+cd polyhe
 pip install -e .
 ```
 
@@ -63,7 +79,7 @@ pip install -e .
 
     Security level
 
-    Tipical values: `128`, `192` and `256`.
+    Typical values: `128`, `192` and `256`.
 
 ### Functions
 - `new(backend, options)`
@@ -82,25 +98,23 @@ pip install -e .
 
   ---
 
-  - `encrypt(obj: numpy.ndarray) -> Ciphertext`
+  - `encrypt(data) -> Ciphertext`
 
-    Encode numpy array to ciphertext
+    Encrypt data to ciphertext
 
-  - `decrypt(obj: Ciphertext) -> numpy.ndarray`
+  - `decrypt(obj: Ciphertext)`
 
-    Decode cypertext to numpy array
+    Decrypt cypertext to data
 
 - `core.Ciphertext(...)`
 
-  Ciphertext has `+` and `*` operator support.
+  Ciphertext has `-`, `+` and `*` operator support, with either another ciphertext or plain data.
+
+  *Note: Support for operation may vary between backends*
 
 - `{backend}.Context(options)`
 
   Concrete context encryption implementation for the given backend
-
-- `{backend}.Ciphertext(options)`
-
-  Concrete ciphertext encryption implementation for the given backend
 
 ## Acknowledgments
 The library has been partially supported by:

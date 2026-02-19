@@ -1,9 +1,11 @@
-"""uHE package"""
+"""PolyHE package"""
 
 import enum
 import importlib
 
-from uhe.core import Options, Context, Ciphertext
+from polyhe.core import Options
+from polyhe.core.context import Context
+from polyhe.core.ciphertext import Ciphertext
 
 
 __all__ = (
