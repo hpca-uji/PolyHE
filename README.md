@@ -1,7 +1,7 @@
 # PolyHE
 Easy Homomorphic Encryption
 
-- Supports Pythons operators & pickle serialization
+- Supports Python's operators & pickle serialization
 - Supports arbitrary typed, shaped & sized arrays
 
 ## Example
