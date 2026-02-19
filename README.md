@@ -15,9 +15,9 @@ p1 = 1
 p2 = 2
 c1 = ctx.encrypt(p1)
 c2 = ctx.encrypt(p2)
-c3 = c1 + c2
+c3 = c1 * c2
 p3 = ctx.decrypt(c3)
-# 3
+# 2
 
 # Lists
 p1 = [0.3, 0.4]
@@ -30,13 +30,13 @@ p3 = ctx.decrypt(c3)
 
 # NumPy
 import numpy as np
-p1 = np.full((2, 3, 4), 0.3, np.float64)
+p1 = np.full((2, 3, 4), 0.4, np.float64)
 p2 = np.full((2, 3, 4), 0.3, np.float64)
 c1 = ctx.encrypt(p1)
 c2 = ctx.encrypt(p2)
-c3 = c1 + c2
+c3 = c1 - c2
 p3 = ctx.decrypt(c3)
-# np.full((2, 3, 4), 0.7, np.float64)
+# np.full((2, 3, 4), 0.1, np.float64)
 ```
 
 ## Install
