@@ -1,7 +1,5 @@
 """TenSEAL encryption"""
 
-# FIXME: TenSEAL context deserialization is very slow
-
 import sys
 import typing
 import copyreg
@@ -55,18 +53,11 @@ class Context(context.Context):
         """Initialize context"""
         super().__init__(options)
 
-        degree = 2 ** self._poly_exp
-        level = SECURITY_LEVEL[self._security_level]
-
         # Context
-        modulus = [
-            m.bit_count()
-            for m in sealapi.CoeffModulus.BFVDefault(degree, level)
-        ]
         self._context = tenseal.context(
             scheme=tenseal.SCHEME_TYPE.CKKS,
-            poly_modulus_degree=degree,
-            coeff_mod_bit_sizes=modulus
+            poly_modulus_degree=self._poly,
+            coeff_mod_bit_sizes=self._coeff_modulus
         )
 
         # Keys
@@ -97,6 +88,7 @@ class Context(context.Context):
 # Pickle support
 def context_reducer(context: SealContext):
     """TenSEAL context pickle reducer"""
+    # FIXME: Context deserialization is very slow
     cls = context.load
     args = (context.serialize(save_secret_key=True),)
     return (cls, args)

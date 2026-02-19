@@ -1,9 +1,7 @@
 """uArchFHE encryption"""
 
-# FIXME: uArchFHE does not support plaintext operations
-# FIXME: uArchFHE does not support public context serialization
-
 import sys
+import typing
 import copyreg
 from dataclasses import dataclass
 from functools import cached_property
@@ -49,7 +47,7 @@ class Ciphertext(ciphertext.Ciphertext):
 
     def _mul(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
         """Multiply two ciphertexts"""
-        return uarchfhe.PyCiphertext.mul(a, b)
+        return uarchfhe.PyCiphertext.mult(a, b)
 
 
 class Context(context.Context):
@@ -59,6 +57,7 @@ class Context(context.Context):
     def __init__(self, options: core.Options = core.Options()) -> None:
         """Initialize context"""
         super().__init__(options)
+        self._plaintext = self.encrypt
 
         # Context
         h = 3  # Secret key Hamming weight (security parameter)
@@ -70,9 +69,20 @@ class Context(context.Context):
         self._keys = keygen.gen_keys()
 
     @cached_property
+    def public(self) -> typing.Self:
+        """Get public context"""
+        # FIXME: No support for public context serialization
+        return super().public
+
+    @cached_property
     def _ckks(self) -> uarchfhe.PyCKKS:
         """uArchFHE CKKS context"""
         return uarchfhe.PyCKKS(self._context, self._keys)
+
+    def _plaintext[T](self, data: T) -> ciphertext.Ciphertext[T]:
+        """Encode data to plaintext"""
+        # FIXME: Not support for plaintext operations
+        return self.encrypt(data)
 
     def __getstate__(self) -> dict:
         """Get serializable state"""

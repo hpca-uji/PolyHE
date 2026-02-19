@@ -40,11 +40,12 @@ class Ciphertext[T]:
 
             # Try scalar to array
             try:
-                other = self._descriptor.type(other)
+                is_np = isinstance(other, np.ndarray)
+                other = np.full(self._descriptor.shape, other, self._descriptor.type)
+                if not is_np:
+                    other = other.tolist()
             except Exception:
                 pass
-            else:
-                other = np.full(self._descriptor.shape, other, self._descriptor.type)
 
             # Try data to plaintext
             try:
@@ -92,7 +93,7 @@ class Ciphertext[T]:
 
     def __neg__(self):
         """Negate a ciphertext"""
-        self._op_unary(self._neg)
+        return self._op_unary(self._neg)
 
     def __add__(self, other):
         """Add two ciphertexts"""

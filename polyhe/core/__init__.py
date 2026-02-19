@@ -40,7 +40,7 @@ COEFF_MODULUS = {
 }
 
 
-@dataclass(slots=True, frozen=True)
+@dataclass(repr=False, slots=True, frozen=True)
 class Descriptor:
     """Data descriptor"""
     type: type
@@ -50,6 +50,10 @@ class Descriptor:
     def numpy(self) -> bool:
         """Is numpy-like"""
         return issubclass(self.type, np.number)
+
+    def __repr__(self) -> str:
+        """Descriptor representation"""
+        return f"<{self.__class__.__name__} type={self.type.__name__} shape={self.shape}>"
 
 
 @dataclass(slots=True, frozen=True)

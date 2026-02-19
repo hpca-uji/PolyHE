@@ -49,8 +49,13 @@ class Context(ABC):
 
     @property
     def _poly_exp(self) -> int:
-        """Polynomial degree"""
+        """Polynomial exponent"""
         return self._slots_exp + 1
+
+    @property
+    def _poly(self) -> int:
+        """Polynomial size"""
+        return 2 ** self._poly_exp
 
     @property
     def _coeff_modulus(self) -> list[int]:
