@@ -71,8 +71,9 @@ class Context(context.Context):
     @cached_property
     def public(self) -> typing.Self:
         """Get public context"""
+        context = super().public
         # FIXME: No support for public context serialization
-        return super().public
+        return context
 
     @cached_property
     def _ckks(self) -> uarchfhe.PyCKKS:
@@ -81,7 +82,7 @@ class Context(context.Context):
 
     def _plaintext[T](self, data: T) -> ciphertext.Ciphertext[T]:
         """Encode data to plaintext"""
-        # FIXME: Not support for plaintext operations
+        # FIXME: No support for plaintext operations
         return self.encrypt(data)
 
     def __getstate__(self) -> dict:
