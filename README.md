@@ -116,7 +116,7 @@ pip install -e .
   Concrete encryption context implementation for the given backend
 
 ## Notes
-`PolyHE` prioritizes simplicity and ease of use over advanced features. It is designed for prototyping and experimentation purposes, rather than production-grade deployments. If you require fine-grained control over encryption parameters, performance tuning, or advanced schemes, we recommend using the underlying backend libraries directly. Alternatively, `Pyfhel` ([source](https://github.com/ibarrond/Pyfhel)) is a mature Python library that provides more comprehensive access to homomorphic encryption features.
+`PolyHE` prioritizes simplicity and ease of use over advanced features. It is designed for prototyping and experimentation purposes rather than production-grade deployments. If you require fine-grained control over encryption parameters, performance tuning, or advanced schemes, we recommend using the underlying backend libraries directly. Alternatively, `Pyfhel` ([source](https://github.com/ibarrond/Pyfhel)) is a mature Python library that provides more comprehensive access to homomorphic encryption features.
 
 ## Acknowledgments
 The library has been partially supported by:
