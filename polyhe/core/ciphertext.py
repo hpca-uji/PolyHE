@@ -51,10 +51,13 @@ class Ciphertext[T]:
             try:
                 other = self._context._plaintext(other)
             except Exception:
-                raise NotImplementedError(f"Different ciphertext types ({other.__class__} != {self.__class__})")  # from None
+                raise NotImplementedError(f"Incompatible type ({other.__class__})")  # from None
+
+        if other._context.options != self._context.options:
+            raise ValueError(f"Different underlying contexts ({other._context} != {self._context})")
 
         if other._descriptor != self._descriptor:
-            raise ValueError(f"Different underlying descriptions ({other._descriptor} != {self._descriptor})")
+            raise ValueError(f"Different underlying ciphertext ({other} != {self})")
 
         return other
 
