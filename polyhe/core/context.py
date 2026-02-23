@@ -20,7 +20,7 @@ __all__ = (
 
 
 class Context(ABC):
-    """Abstract context"""
+    """Abstract encryption context"""
     _cls: type[Ciphertext]
 
     def __init__(self, options: Options = Options()) -> None:

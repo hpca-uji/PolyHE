@@ -91,7 +91,7 @@ pip install -e .
 ### Classes
 - `core.Context(options)`
 
-  Context implementation
+  Encryption context implementation
 
   - `options: Options = Options()`
 
@@ -113,7 +113,7 @@ pip install -e .
 
 - `{backend}.Context(options)`
 
-  Concrete context encryption implementation for the given backend
+  Concrete encryption context implementation for the given backend
 
 ## Notes
 `PolyHE` prioritizes simplicity and ease of use over advanced features. It is designed for prototyping and experimentation purposes, rather than production-grade deployments. If you require fine-grained control over encryption parameters, performance tuning, or advanced schemes, we recommend using the underlying backend libraries directly. Alternatively, `Pyfhel` ([source](https://github.com/ibarrond/Pyfhel)) is a mature Python library that provides more comprehensive access to homomorphic encryption features.
