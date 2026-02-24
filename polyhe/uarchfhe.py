@@ -39,14 +39,20 @@ class Ciphertext(ciphertext.Ciphertext):
 
     def _add(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
         """Add two ciphertexts"""
+        if not isinstance(b, uarchfhe.PyCiphertext):
+            return uarchfhe.PyCiphertext.add_plaintext(a, b, self._context._scale_exp)
         return uarchfhe.PyCiphertext.add(a, b)
 
     def _sub(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
         """Substract two ciphertexts"""
-        return uarchfhe.PyCiphertext.add(a, self._neg(b))
+        if not isinstance(b, uarchfhe.PyCiphertext):
+            return uarchfhe.PyCiphertext.add_plaintext(a, -b, self._context._scale_exp)
+        return uarchfhe.PyCiphertext.sub(a, b)
 
     def _mul(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
         """Multiply two ciphertexts"""
+        if not isinstance(b, uarchfhe.PyCiphertext):
+            return uarchfhe.PyCiphertext.mult_plaintext(a, b, self._context._slots, self._context._scale_exp)
         return uarchfhe.PyCiphertext.mult(a, b)
 
 
@@ -72,18 +78,14 @@ class Context(context.Context):
     def public(self) -> typing.Self:
         """Get public context"""
         context = super().public
-        # FIXME: No support for public context serialization
+        public_key = context._keys.save_public_keys_to_memory()
+        context._keys = context._keys.load_full_from_memory(public_key)
         return context
 
     @cached_property
     def _ckks(self) -> uarchfhe.PyCKKS:
         """uArchFHE CKKS context"""
         return uarchfhe.PyCKKS(self._context, self._keys)
-
-    def _plaintext[T](self, data: T) -> ciphertext.Ciphertext[T]:
-        """Encode data to plaintext"""
-        # FIXME: No support for plaintext operations
-        return self.encrypt(data)
 
     def __getstate__(self) -> dict:
         """Get serializable state"""
@@ -111,7 +113,9 @@ def context_reducer(context: uarchfhe.PyContext) -> tuple:
 def keychain_reducer(keychain: uarchfhe.PyKeychain) -> tuple:
     """uArchFHE key chain pickle reducer"""
     cls = keychain.load_full_from_memory
-    args = (keychain.save_public_keys_to_memory(), keychain.save_secret_key_to_memory())
+    public = keychain.save_public_keys_to_memory()
+    secret = keychain.save_secret_key_to_memory() if keychain.has_secret_key else None
+    args = (public, secret)
     return (cls, args)
 
 
