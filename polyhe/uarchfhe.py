@@ -46,7 +46,7 @@ class Ciphertext(ciphertext.Ciphertext):
     def _sub(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:
         """Substract two ciphertexts"""
         if not isinstance(b, uarchfhe.PyCiphertext):
-            return uarchfhe.PyCiphertext.add_plaintext(a, -b, self._context._scale_exp)
+            return uarchfhe.PyCiphertext.sub_plaintext(a, b, self._context._scale_exp)
         return uarchfhe.PyCiphertext.sub(a, b)
 
     def _mul(self, a: uarchfhe.PyCiphertext, b: uarchfhe.PyCiphertext) -> uarchfhe.PyCiphertext:

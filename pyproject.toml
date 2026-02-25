@@ -1,6 +1,6 @@
 [project]
 name = "polyhe"
-version = "1.0.1"
+version = "1.0.2"
 description = "Simple & easy Homomorphic Encryption"
 readme = "README.md"
 license = "GPL-3.0-or-later"
