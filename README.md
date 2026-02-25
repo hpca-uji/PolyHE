@@ -2,7 +2,7 @@
 Simple & easy Homomorphic Encryption
 
 - Supports Python's operators & pickle
-- Supports arbitrary typed & shaped arrays
+- Supports arbitrary typed, shaped & sized arrays
 
 ## Example
 ```python
