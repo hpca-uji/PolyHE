@@ -5,9 +5,7 @@ description = "Simple & easy Homomorphic Encryption"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
-authors = [
-    { name = "Miguel Ángel Prosper", email = "mprosper@uji.es" }
-]
+authors = [{ name = "Miguel Ángel Prosper", email = "mprosper@uji.es" }]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
