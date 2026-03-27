@@ -16,7 +16,7 @@ classifiers = [
     "Topic :: Utilities"
 ]
 keywords = ["Homomorphic", "Encryption", "Python"]
-urls = { Homepage = "https://github.com/hpca-uji/polyhe", Repository = "https://github.com/hpca-uji/polyhe.git"}
+urls = { Homepage = "https://github.com/hpca-uji/polyhe", Repository = "https://github.com/hpca-uji/polyhe.git" }
 
 requires-python = ">=3.13"
 dependencies = [
