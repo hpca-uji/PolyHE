@@ -1,8 +1,20 @@
 # PolyHE
-Simple & easy Homomorphic Encryption
+Simple and Pythonic Homomorphic Encryption
 
-- Supports Python's operators & pickle
-- Supports arbitrary typed, shaped & sized arrays
+Designed to make homomorphic encryption approachable, predictable and easy to integrate into Python applications.
+
+- Native Python operators (`+`, `-`, `*`)
+- Transparent operations with Python and NumPy objects
+- Built-in pickle support for encrypted objects
+- Predictable type, dtype and shape preservation
+- Arbitrary typed, shaped and sized arrays
+- No plaintext encoders or packing APIs required
+- Automatic multi-ciphertext management beyond backend slot limits
+- Portable ciphertexts with embedded public context
+- Unified high-level interface across multiple FHE backends
+- Transparent serialization and remote computation workflows
+- Familiar Python semantics with minimal cryptographic boilerplate
+- Designed for experimentation, prototyping and educational use
 
 ## Example
 ```python

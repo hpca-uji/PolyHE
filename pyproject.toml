@@ -1,7 +1,7 @@
 [project]
 name = "polyhe"
-version = "1.0.2"
-description = "Simple & easy Homomorphic Encryption"
+version = "1.0.3"
+description = "Simple and Pythonic Homomorphic Encryption"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
@@ -18,17 +18,16 @@ classifiers = [
 keywords = ["Homomorphic", "Encryption", "Python"]
 urls = { Homepage = "https://github.com/hpca-uji/polyhe", Repository = "https://github.com/hpca-uji/polyhe.git" }
 
-requires-python = ">=3.13"
+requires-python = "~=3.13"
 dependencies = [
-    "numpy>=1.19.4",
-    "openfhe>=1.4.0",
-    "tenseal>=0.3.16",
-    # "fhe-py-binding>=0.1.0"
+    "numpy~=2.4",
+    "openfhe~=1.4",
+    "tenseal~=0.3",
 ]
 
 [build-system]
 requires = [
-    "setuptools>=68.2.0"
+    "setuptools~=82.0"
 ]
 build-backend = "setuptools.build_meta"
 
