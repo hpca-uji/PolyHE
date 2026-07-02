@@ -18,7 +18,7 @@ def main(config: Namespace) -> None:
     p2 = -1
     c1 = ctx.encrypt(p1)
     c2 = ctx.encrypt(p2)
-    c3 = c1 * c2 + p1
+    c3 = (c1 * c2) + p1
     p3 = ctx.decrypt(c3)
     ref = 0
     assert np.isclose(p3, ref).all(), f"numbers error; got {p3}, expect {ref}"
@@ -38,9 +38,9 @@ def main(config: Namespace) -> None:
     p2 = np.full((2, 3, 4), 0.3, np.float64)
     c1 = ctx.encrypt(p1)
     c2 = ctx.encrypt(p2)
-    c3 = c1 - c2
+    c3 = (c1 - c2) * 2
     p3 = ctx.decrypt(c3)
-    ref = np.full((2, 3, 4), 0.1, np.float64)
+    ref = np.full((2, 3, 4), 0.2, np.float64)
     assert np.isclose(p3, ref).all(), f"numpy error; got {p3}, expect {ref}"
 
 

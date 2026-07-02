@@ -26,7 +26,7 @@ p1 = 1
 p2 = -1
 c1 = ctx.encrypt(p1)
 c2 = ctx.encrypt(p2)
-c3 = c1 * c2 + p1
+c3 = (c1 * c2) + p1
 p3 = ctx.decrypt(c3)
 # 0
 
@@ -45,9 +45,9 @@ p1 = np.full((2, 3, 4), 0.4, np.float64)
 p2 = np.full((2, 3, 4), 0.3, np.float64)
 c1 = ctx.encrypt(p1)
 c2 = ctx.encrypt(p2)
-c3 = c1 - c2
+c3 = (c1 - c2) * 2
 p3 = ctx.decrypt(c3)
-# np.full((2, 3, 4), 0.1, np.float64)
+# np.full((2, 3, 4), 0.2, np.float64)
 ```
 
 ## Install

@@ -88,7 +88,7 @@ class Context(context.Context):
         return context
 
     def _encode(self, chunk):
-        """Ecnode data to plaintext"""
+        """Encode data to plaintext"""
         return self._context.MakeCKKSPackedPlaintext(chunk)
 
     def _encrypt(self, chunk: openfhe.Plaintext) -> openfhe.Ciphertext:
